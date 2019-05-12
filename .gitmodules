@@ -1,0 +1,3 @@
+[submodule "Scaffold-submodule"]
+	path = Scaffold-submodule
+	url = git@github.com:xuqingquan1995/Scaffold.git
