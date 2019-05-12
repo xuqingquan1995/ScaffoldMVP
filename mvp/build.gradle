@@ -42,5 +42,5 @@ dependencies {
     //test
     testImplementation rootProject.ext.deps.junit
     androidTestImplementation rootProject.ext.deps.espresso_core
-    implementation project(path: ':scaffold')
+    api project(path: ':scaffold')
 }
