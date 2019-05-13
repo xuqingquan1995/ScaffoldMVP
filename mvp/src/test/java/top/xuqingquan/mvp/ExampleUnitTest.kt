@@ -1,4 +1,4 @@
-package top.xuqingquan
+package top.xuqingquan.mvp
 
 import org.junit.Test
 
