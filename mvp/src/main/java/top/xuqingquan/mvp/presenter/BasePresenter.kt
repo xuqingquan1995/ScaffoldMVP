@@ -16,7 +16,7 @@ open class BasePresenter<M : IRepository, V : IView>(protected val model: M? = n
     IPresenter,
     LifecycleObserver {
 
-    private var presenterScope = CoroutineScope(Dispatchers.Main)
+    private var presenterScope = CoroutineScope(Dispatchers.Default)
 
     init {
         if (view is LifecycleOwner) {
@@ -33,7 +33,7 @@ open class BasePresenter<M : IRepository, V : IView>(protected val model: M? = n
     }
 
     protected fun <T> launch(
-        context: CoroutineContext = Dispatchers.Default,
+        context: CoroutineContext = Dispatchers.Main,
         tryBlock: suspend CoroutineScope.() -> T,
         catchBlock: suspend CoroutineScope.(Throwable) -> Unit = {},
         finallyBlock: suspend CoroutineScope.() -> Unit = {}
@@ -53,7 +53,7 @@ open class BasePresenter<M : IRepository, V : IView>(protected val model: M? = n
     }
 
     protected fun <T> launch(
-        context: CoroutineContext = Dispatchers.Default,
+        context: CoroutineContext = Dispatchers.Main,
         tryBlock: suspend CoroutineScope.() -> T
     ): Job {
         return launch(context, tryBlock, {}, {})
