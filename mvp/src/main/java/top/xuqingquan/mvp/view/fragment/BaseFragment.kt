@@ -26,7 +26,7 @@ abstract class BaseFragment<P : IPresenter, VDB : ViewDataBinding> : SimpleFragm
 
     override fun initView(view: View) {}
 
-    public override fun onDestroy() {
+    override fun onDestroy() {
         super.onDestroy()
         presenter?.onDestroy()
         binding.unbind()

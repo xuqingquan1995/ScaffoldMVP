@@ -16,6 +16,8 @@ open class BasePresenter<M : IRepository, V : IView>(protected val model: M? = n
     IPresenter,
     LifecycleObserver {
 
+    private var presenterScope = CoroutineScope(Dispatchers.Main)
+
     init {
         if (view is LifecycleOwner) {
             view.lifecycle.addObserver(this)
@@ -27,6 +29,7 @@ open class BasePresenter<M : IRepository, V : IView>(protected val model: M? = n
             view.lifecycle.removeObserver(this)
         }
         model?.onDestroy()
+        presenterScope.cancel()
     }
 
     protected fun <T> launch(
@@ -35,21 +38,7 @@ open class BasePresenter<M : IRepository, V : IView>(protected val model: M? = n
         catchBlock: suspend CoroutineScope.(Throwable) -> Unit = {},
         finallyBlock: suspend CoroutineScope.() -> Unit = {}
     ): Job {
-        return CoroutineScope(context).launch {
-            tryCatch(tryBlock, catchBlock, finallyBlock)
-        }
-    }
-
-    protected fun <T> launch(context: CoroutineContext = Dispatchers.Default, tryBlock: suspend CoroutineScope.() -> T): Job {
-        return launch(context, tryBlock, {}, {})
-    }
-
-    private suspend fun <T> tryCatch(
-        tryBlock: suspend CoroutineScope.() -> T,
-        catchBlock: suspend CoroutineScope.(Throwable) -> Unit,
-        finallyBlock: suspend CoroutineScope.() -> Unit
-    ) {
-        coroutineScope {
+        return presenterScope.launch(context) {
             try {
                 tryBlock()
             } catch (e: Throwable) {
@@ -61,6 +50,13 @@ open class BasePresenter<M : IRepository, V : IView>(protected val model: M? = n
                 finallyBlock()
             }
         }
+    }
+
+    protected fun <T> launch(
+        context: CoroutineContext = Dispatchers.Default,
+        tryBlock: suspend CoroutineScope.() -> T
+    ): Job {
+        return launch(context, tryBlock, {}, {})
     }
 
 }
