@@ -1,7 +1,5 @@
 package top.xuqingquan.mvp.presenter
 
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.*
 import top.xuqingquan.BuildConfig
 import top.xuqingquan.base.model.repository.IRepository
@@ -12,22 +10,33 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by 许清泉 on 2019-05-12 01:17
  */
-open class BasePresenter<M : IRepository, V : IView>(protected val model: M? = null, protected val view: V? = null) :
-    IPresenter,
-    LifecycleObserver {
+abstract class BasePresenter : IPresenter {
 
-    private var presenterScope = CoroutineScope(Dispatchers.Default)
-
-    init {
-        if (view is LifecycleOwner) {
-            view.lifecycle.addObserver(this)
+    protected var model: IRepository? = null
+        get() {
+            if (field == null) {
+                field = getM()
+            }
+            return field!!
         }
-    }
+        private set
+
+    protected var view: IView? = null
+        get() {
+            if (field == null) {
+                field = getV()
+            }
+            return field!!
+        }
+        private set
+
+    protected abstract fun <V : IView> getV(): V?
+
+    protected abstract fun <M : IRepository> getM(): M?
+
+    private var presenterScope = CoroutineScope(Dispatchers.Default) + Job()
 
     override fun onDestroy() {
-        if (view is LifecycleOwner) {
-            view.lifecycle.removeObserver(this)
-        }
         model?.onDestroy()
         presenterScope.cancel()
     }

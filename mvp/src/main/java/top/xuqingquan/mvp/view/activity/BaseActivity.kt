@@ -1,32 +1,27 @@
 package top.xuqingquan.mvp.view.activity
 
-import android.os.Bundle
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import top.xuqingquan.base.view.activity.SimpleActivity
 import top.xuqingquan.mvp.contract.IPresenter
-import javax.inject.Inject
+import top.xuqingquan.mvp.contract.IView
 
 /**
  * Created by 许清泉 on 2019-05-12 02:00
  */
-abstract class BaseActivity<P : IPresenter, VDB : ViewDataBinding> : SimpleActivity() {
+abstract class BaseActivity : SimpleActivity(), IView {
 
-    @JvmField
-    @Inject
-    var presenter: P? = null
-    protected lateinit var binding: VDB
+    protected var presenter: IPresenter? = null
+        get() {
+            if (field == null) {
+                field = getP()
+            }
+            return field
+        }
+        private set
 
-    public override fun onDestroy() {
+    override fun onDestroy() {
         super.onDestroy()
         presenter?.onDestroy()
-        binding.unbind()
     }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = DataBindingUtil.setContentView(this, getLayoutId())
-        setContentView(binding.root)
-        initData(savedInstanceState)
-    }
-
+    protected abstract fun <P : IPresenter> getP(): P?
 }

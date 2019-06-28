@@ -1,12 +1,11 @@
 package top.xuqingquan.mvp.view.fragment
 
-import androidx.databinding.ViewDataBinding
-import top.xuqingquan.mvp.contract.IPresenter
-
 /**
  * Created by 许清泉 on 2019-05-12 02:13
  */
-abstract class BaseLazyLoadFragment<P : IPresenter, VDB : ViewDataBinding> : BaseFragment<P, VDB>() {
+@Suppress("DEPRECATION")
+@Deprecated("懒加载使用其他方式")
+abstract class BaseLazyLoadFragment : BaseFragment() {
     private var isViewCreated: Boolean = false // 界面是否已创建完成
     private var isVisibleToUser: Boolean = false // 是否对用户可见
     private var isDataLoaded: Boolean = false // 数据是否已请求
@@ -17,7 +16,7 @@ abstract class BaseLazyLoadFragment<P : IPresenter, VDB : ViewDataBinding> : Bas
     private val isParentVisible: Boolean
         get() {
             val fragment = parentFragment
-            return fragment == null || fragment is BaseLazyLoadFragment<*, *> && fragment.isVisibleToUser
+            return fragment == null || fragment is BaseLazyLoadFragment && fragment.isVisibleToUser
         }
 
     /**
@@ -50,7 +49,7 @@ abstract class BaseLazyLoadFragment<P : IPresenter, VDB : ViewDataBinding> : Bas
             return
         }
         for (child in fragments) {
-            if (child is BaseLazyLoadFragment<*, *> && child.isVisibleToUser) {
+            if (child is BaseLazyLoadFragment && child.isVisibleToUser) {
                 child.tryLoadData()
             }
         }
