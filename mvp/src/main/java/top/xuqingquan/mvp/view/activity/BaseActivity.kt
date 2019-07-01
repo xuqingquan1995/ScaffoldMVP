@@ -7,9 +7,9 @@ import top.xuqingquan.mvp.contract.IView
 /**
  * Created by 许清泉 on 2019-05-12 02:00
  */
-abstract class BaseActivity : SimpleActivity(), IView {
+abstract class BaseActivity<P : IPresenter> : SimpleActivity(), IView {
 
-    protected var presenter: IPresenter? = null
+    protected var presenter: P? = null
         get() {
             if (field == null) {
                 field = getP()
@@ -23,5 +23,5 @@ abstract class BaseActivity : SimpleActivity(), IView {
         presenter?.onDestroy()
     }
 
-    protected abstract fun <P : IPresenter> getP(): P?
+    protected abstract fun getP(): P?
 }

@@ -10,29 +10,22 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by 许清泉 on 2019-05-12 01:17
  */
-abstract class BasePresenter : IPresenter {
+abstract class BasePresenter<V : IView, M : IRepository> : IPresenter {
 
-    protected var model: IRepository? = null
-        get() {
-            if (field == null) {
-                field = getM()
-            }
-            return field!!
-        }
-        private set
+    protected val view: V
 
-    protected var view: IView? = null
-        get() {
-            if (field == null) {
-                field = getV()
-            }
-            return field!!
-        }
-        private set
 
-    protected abstract fun <V : IView> getV(): V?
+    protected var model: M? = null
 
-    protected abstract fun <M : IRepository> getM(): M?
+    constructor(view: V) {
+        this.view = view
+    }
+
+    constructor(view: V, model: M) {
+        this.view = view
+        this.model = model
+    }
+
 
     private var presenterScope = CoroutineScope(Dispatchers.Default) + Job()
 

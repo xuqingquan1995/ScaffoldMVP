@@ -7,9 +7,9 @@ import top.xuqingquan.mvp.contract.IView
 /**
  * Created by 许清泉 on 2019-05-12 02:09
  */
-abstract class BaseFragment : SimpleFragment(), IView {
+abstract class BaseFragment<P : IPresenter> : SimpleFragment(), IView {
 
-    protected var presenter: IPresenter? = null
+    protected var presenter: P? = null
         get() {
             if (field == null) {
                 field = getP()
@@ -18,7 +18,7 @@ abstract class BaseFragment : SimpleFragment(), IView {
         }
         private set
 
-    protected abstract fun <P : IPresenter> getP(): P?
+    protected abstract fun getP(): P?
 
     override fun onDestroy() {
         super.onDestroy()
