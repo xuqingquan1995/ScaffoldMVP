@@ -27,7 +27,7 @@ abstract class BasePresenter<V : IView, M : IRepository> : IPresenter {
     }
 
 
-    private var presenterScope = CoroutineScope(Dispatchers.Default) + Job()
+    private var presenterScope = CoroutineScope(Dispatchers.IO) + Job()
 
     override fun onDestroy() {
         model?.onDestroy()
@@ -35,7 +35,7 @@ abstract class BasePresenter<V : IView, M : IRepository> : IPresenter {
     }
 
     protected fun <T> launch(
-        context: CoroutineContext = Dispatchers.Main,
+        context: CoroutineContext = presenterScope.coroutineContext,
         tryBlock: suspend CoroutineScope.() -> T,
         catchBlock: suspend CoroutineScope.(Throwable) -> Unit = {},
         finallyBlock: suspend CoroutineScope.() -> Unit = {}
@@ -55,7 +55,7 @@ abstract class BasePresenter<V : IView, M : IRepository> : IPresenter {
     }
 
     protected fun <T> launch(
-        context: CoroutineContext = Dispatchers.Main,
+        context: CoroutineContext = presenterScope.coroutineContext,
         tryBlock: suspend CoroutineScope.() -> T
     ): Job {
         return launch(context, tryBlock, {}, {})
